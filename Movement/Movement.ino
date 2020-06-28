@@ -67,6 +67,8 @@ void loop() {
       //After reaching the final spot the bar pushes parcel with linear motor
       push();
       delay(200); //time set according to dimension of bot.
+      back();
+      delay(200); //time set according to dimension of bot.
     }
     else if(pincode=="location2")
     {
@@ -75,6 +77,8 @@ void loop() {
   
       //After reaching the final spot the bar pushes parcel with linear motor
       push();
+      delay(200); //time set according to dimension of bot.
+      back();
       delay(200); //time set according to dimension of bot.
     }
     else if(pincode=="location3")
@@ -85,6 +89,8 @@ void loop() {
   
       //After reaching the final spot the bar pushes parcel with linear motor
       push();
+      delay(200); //time set according to dimension of bot.
+      back();
       delay(200); //time set according to dimension of bot.
     }
 
@@ -110,6 +116,12 @@ void push()
 {
   digitalWrite(relay1, HIGH);
   digitalWrite(relay2, LOW);
+}
+
+void back()
+{
+  digitalWrite(relay1, LOW);
+  digitalWrite(relay2, HIGH);
 }
 
 void turn_up_30()
