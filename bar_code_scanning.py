@@ -9,6 +9,12 @@ import imutils
 import time
 import cv2
 
+#for sending output to arduino
+import serial
+ser = serial.Serial('/dev/ttyACM0',9600)
+ser.flushInput()
+
+
 # construct the argument parser and parse the arguments
 
 ap = argparse.ArgumentParser()
@@ -51,6 +57,7 @@ while True:
 		if barcodeData not in found:
 			csv.write("{},{}\n".format(datetime.datetime.now(),
 				barcodeData))
+			ser.write(barcodeData)
 			csv.flush()
 			found.add(barcodeData)
 
