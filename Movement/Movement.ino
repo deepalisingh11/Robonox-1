@@ -1,10 +1,12 @@
+//reading neccesary libraries
+
 #include <string.h>
 #include <SoftwareSerial.h>
 #include <Servo.h> //Read library for servo motor
 
 SoftwareSerial BTSerial(11, 12);
 
-#define EN1 3 
+#define EN1 3   
 #define EN2 4 
 #define EN3 5  
 #define EN4 6 
@@ -98,6 +100,9 @@ void loop() {
   
 }
 
+
+// thid function is used to rotate parcel if no barcode find on that side of parcel
+
 void rotate()
 {
     digitalWrite(12, HIGH);
@@ -112,17 +117,22 @@ void rotate()
     delay(1500);
 }
 
+// function is defined to push the parcel by bar during unloading parcel after seperation
+
 void push()
 {
   digitalWrite(relay1, HIGH);
   digitalWrite(relay2, LOW);
 }
 
+
 void back()
 {
   digitalWrite(relay1, LOW);
   digitalWrite(relay2, HIGH);
 }
+
+// turn_up_30 is used to to turn up servo motor by 30 to start moving the bot
 
 void turn_up_30()
 {
@@ -138,6 +148,8 @@ void turn_up_30()
     delay(1500);
 }
 
+// turn_down_30 is used to to turn down servo motor by 30 to start stop moving bot
+
 void turn_down_30()
 {
     digitalWrite(10, HIGH);
@@ -152,6 +164,8 @@ void turn_down_30()
     delay(1500);
 }
 
+// moving_forward function is use to start moving bot forward
+
 void moving_forward() {
   // A  
   digitalWrite(EN1, HIGH);
@@ -161,6 +175,8 @@ void moving_forward() {
   digitalWrite(EN3, HIGH);
   digitalWrite(EN4, LOW);
 }
+
+// moving_backward function is defined to start moving bot backward 
 
 void moving_backward() {
   // A  
@@ -172,6 +188,8 @@ void moving_backward() {
   digitalWrite(EN4, HIGH);
 }
 
+
+// stop_moving function is used to stop the bot during seperation process
 
 void stop_moving() {
   digitalWrite(EN1, LOW);
