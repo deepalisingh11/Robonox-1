@@ -14,6 +14,8 @@ SoftwareSerial BTSerial(11, 12);
 int carSpeed = 200; 
 
 Servo myservo; //Create an object for servo
+Servo myservo_rotation; //Create an object for servo for rotation of parcel
+
 int val; // Variable for storing servo angle
 
 void setup() {
@@ -30,6 +32,12 @@ void setup() {
   myservo.attach(11); // Set the digital pin 11 as the command pin for determining the servo angle
   pinMode(10, OUTPUT);
   pinMode(9, OUTPUT);
+
+  //servo-rotation
+  myservo_rotation.attach(2); // Set the digital pin 11 as the command pin for determining the servo angle
+  pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
+  
 
   //linear actuator
   //Set pinMode to OUTPUT for the two relay pins
@@ -50,42 +58,70 @@ void loop() {
 
 
   
-  if(pincode==1)
-  {
-    turn_up_30();
-    moving_forward();
-    delay(1000); //set according to 50m
-
-    //After reaching the final spot the bar pushes parcel with linear motor
-    push();
-    delay(200); //time set according to dimension of bot.
-  }
-  else if(pincode==2)
-  {
-    moving_forward();
-    delay(1000); //set according to 50m
-
-    //After reaching the final spot the bar pushes parcel with linear motor
-    push();
-    delay(200); //time set according to dimension of bot.
-  }
-  else if(pincode==3)
-  {
-    turn_down_30();
-    moving_forward();
-    delay(1000); //set according to 50m
-
-    //After reaching the final spot the bar pushes parcel with linear motor
-    push();
-    delay(200); //time set according to dimension of bot.
-  }
+    if(pincode=="location1")
+    {
+      turn_up_30();
+      moving_forward();
+      delay(1000); //set according to 50m
   
+      //After reaching the final spot the bar pushes parcel with linear motor
+      push();
+      delay(200); //time set according to dimension of bot.
+      back();
+      delay(200); //time set according to dimension of bot.
+    }
+    else if(pincode=="location2")
+    {
+      moving_forward();
+      delay(1000); //set according to 50m
+  
+      //After reaching the final spot the bar pushes parcel with linear motor
+      push();
+      delay(200); //time set according to dimension of bot.
+      back();
+      delay(200); //time set according to dimension of bot.
+    }
+    else if(pincode=="location3")
+    {
+      turn_down_30();
+      moving_forward();
+      delay(1000); //set according to 50m
+  
+      //After reaching the final spot the bar pushes parcel with linear motor
+      push();
+      delay(200); //time set according to dimension of bot.
+      back();
+      delay(200); //time set according to dimension of bot.
+    }
+
+    rotate(); //If no barrcode is found on the surface then the rotator on bottom rotates it.
+  
+}
+
+void rotate()
+{
+    digitalWrite(12, HIGH);
+    digitalWrite(13, LOW);
+    val = 0;
+    myservo_rotation.write(val);
+    delay(1500);
+    digitalWrite(12, HIGH);
+    digitalWrite(13, LOW);
+    val = +90;
+    myservo.write(val);
+    delay(1500);
 }
 
 void push()
 {
   digitalWrite(relay1, HIGH);
   digitalWrite(relay2, LOW);
+}
+
+void back()
+{
+  digitalWrite(relay1, LOW);
+  digitalWrite(relay2, HIGH);
 }
 
 void turn_up_30()

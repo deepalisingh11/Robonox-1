@@ -1,4 +1,3 @@
-
 #importing necessary libraries
 
 from imutils.video import VideoStream
@@ -8,11 +7,8 @@ import datetime
 import imutils
 import time
 import cv2
+import serial     # to connect raspberry pi to arduino
 
-#for sending output to arduino
-import serial
-ser = serial.Serial('/dev/ttyACM0',9600)
-ser.flushInput()
 
 
 # construct the argument parser and parse the arguments
@@ -28,8 +24,11 @@ time.sleep(2.0)
 # barcodes found thus far
 csv = open(args["output"], "w")
 found = set()
-# loop over the frames from the video stream
 
+#defininng three pincodes whom we have to differentiate parcels
+three_pincodes = ["303600","304044","304050"]
+
+# loop over the frames from the video stream
 while True:
 	# grab the frame from the threaded video stream and resize it to
 	# have a maximum width of 400 pixels
@@ -50,14 +49,32 @@ while True:
 		barcodeType = barcode.type
 		# draw the barcode data and barcode type on the image
 		text = "{} ({})".format(barcodeData, barcodeType)
-		cv2.putText(frame, text, (x, y - 10),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+		cv2.putText(frame, text, (x, y - 10),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+
+
+        # checking if barcode exist from these three pincodes then it will signal the arduino 
+        	for i in range(3):
+            		if (three_pincodes[i] == barcodeData):
+               			if i == 0:                                      #if pincode 1 exist then it will signal arduino to go for path one
+                    			ser = serial.Serial('/dev/ttyUSB0', 9600)
+                    			ser.write(b'1')
+                		elif i == 1:                                     #if pincode 2 exist then it will signal arduino to go for path two
+                    			ser = serial.Serial('/dev/ttyUSB0', 9600)
+                    			ser.write(b'2')
+                		else:                                            #if pincode 3 exist then it will signal arduino to go for path three
+                    			ser = serial.Serial('/dev/ttyUSB0', 9600)
+                    			ser.write(b'2')
+                		break
+            		else:
+                		pass
+        
+
+        # we stores csv file to check how many type of pincode we get to check we didnt get wroung parcel
 		# if the barcode text is currently not in our CSV file, write
 		# the timestamp + barcode to disk and update the set
 		if barcodeData not in found:
 			csv.write("{},{}\n".format(datetime.datetime.now(),
 				barcodeData))
-			ser.write(barcodeData)
 			csv.flush()
 			found.add(barcodeData)
 
